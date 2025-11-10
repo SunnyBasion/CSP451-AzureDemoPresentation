@@ -23,6 +23,4 @@ This project demonstrates how cloud-based AI and data services can be integrated
 
 ---
 
-**Author:** Sunny Basion  
-**Location:** Canada  
-**Technologies:** Flask · Python · Azure · Cosmos DB · Power BI
+
