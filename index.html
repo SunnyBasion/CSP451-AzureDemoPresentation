@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sentiment Analysis Dashboard</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        input { width: 300px; padding: 8px; }
+        button { padding: 8px 12px; margin-left: 10px; }
+        pre { background-color: #f4f4f4; padding: 15px; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h1>Sentiment Analysis Dashboard</h1>
+    <input type="text" id="userText" placeholder="Enter text here">
+    <button onclick="analyzeText()">Analyze</button>
+    <pre id="result"></pre>
+
+    <script>
+        async function analyzeText() {
+            const text = document.getElementById('userText').value;
+            if (!text) {
+                alert("Please enter some text!");
+                return;
+            }
+
+            try {
+                const response = await fetch("/analyze", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ text })
+                });
+                const data = await response.json();
+
+                // Format output nicely
+                const sentiment = data.sentiment.charAt(0).toUpperCase() + data.sentiment.slice(1);
+                const scores = data.confidence_scores;
+                const keyPhrases = data.key_phrases.join(", ") || "None";
+
+                const output = `
+Sentiment: ${sentiment}
+Confidence:
+  Positive: ${(scores.positive * 100).toFixed(1)}%
+  Neutral: ${(scores.neutral * 100).toFixed(1)}%
+  Negative: ${(scores.negative * 100).toFixed(1)}%
+
+Key Phrases: ${keyPhrases}
+                `;
+                document.getElementById('result').innerText = output;
+
+            } catch (err) {
+                console.error(err);
+                alert("Error analyzing text. Check your backend server.");
+            }
+        }
+    </script>
+</body>
+</html>
